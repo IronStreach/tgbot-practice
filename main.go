@@ -13,6 +13,7 @@ func MainHandler(resp http.ResponseWriter, _ *http.Request) {
 func main() {
 	http.HandleFunc("/", MainHandler)
 	go http.ListenAndServe(":"+os.Getenv("PORT"), nil)
+
 	data := GetWeather("https://api.weather.yandex.ru/v1/forecast?lat=55.011897&lon=36.462555&extra=true", "6a653901-d939-47c7-8868-db449fd6a7df")
 	var temper string
 	city := "Maloyaroslavets"
@@ -21,7 +22,15 @@ func main() {
 	} else {
 		temper = strconv.Itoa(int(data.Fact.Temp))
 	}
+	inlineKeyboardMarkup := tgbotapi.InlineKeyboardMarkup{}
+	keyboard := tgbotapi.InlineKeyboardButton{Text:"Показать погоду"}
+	*keyboard.CallbackData = "/weather"
+	button := []tgbotapi.InlineKeyboardButton{keyboard}
+	buttons := [][]tgbotapi.InlineKeyboardButton{button}
 
+
+	markup := inlineKeyboardMarkup.InlineKeyboard
+	markup = buttons
 	bot, err := tgbotapi.NewBotAPI("931561769:AAEFSazicKW9Axrr_lYakkTv5S2WSFTUu6E")
 	if err != nil {
 		panic(err)
@@ -35,6 +44,7 @@ func main() {
 		switch update.Message.Text {
 		case "/start":
 			msg := tgbotapi.NewMessage(update.Message.Chat.ID, "Bot doesn't done yet. Please, be patient!")
+			msg.ReplyMarkup = markup
 			bot.Send(msg)
 		case "/weather":
 			msg := tgbotapi.NewMessage(update.Message.Chat.ID, "Weather in your city: \n" + city + ": " + temper + "°C")
