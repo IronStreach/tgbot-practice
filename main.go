@@ -2,10 +2,17 @@ package main
 
 import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
+	"net/http"
+	"os"
 	"strconv"
 )
+func MainHandler(resp http.ResponseWriter, _ *http.Request) {
+	resp.Write([]byte("Hi there! I'm DndSpellsBot!"))
+}
 
 func main() {
+	http.HandleFunc("/", MainHandler)
+	go http.ListenAndServe(":"+os.Getenv("PORT"), nil)
 	data := GetWeather("https://api.weather.yandex.ru/v1/forecast?lat=55.011897&lon=36.462555&extra=true", "6a653901-d939-47c7-8868-db449fd6a7df")
 	var temper string
 	city := "Maloyaroslavets"
