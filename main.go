@@ -22,15 +22,12 @@ func main() {
 	} else {
 		temper = strconv.Itoa(int(data.Fact.Temp))
 	}
-	inlineKeyboardMarkup := tgbotapi.InlineKeyboardMarkup{}
-	keyboard := tgbotapi.InlineKeyboardButton{Text:"Показать погоду"}
-	*keyboard.CallbackData = "/weather"
-	button := []tgbotapi.InlineKeyboardButton{keyboard}
-	buttons := [][]tgbotapi.InlineKeyboardButton{button}
 
-
-	markup := inlineKeyboardMarkup.InlineKeyboard
-	markup = buttons
+	keyboard := tgbotapi.InlineKeyboardMarkup{}
+		var row []tgbotapi.InlineKeyboardButton
+		btn := tgbotapi.NewInlineKeyboardButtonData("Показать погоду", "/weather")
+		row = append(row, btn)
+		keyboard.InlineKeyboard = append(keyboard.InlineKeyboard, row)
 	bot, err := tgbotapi.NewBotAPI("931561769:AAEFSazicKW9Axrr_lYakkTv5S2WSFTUu6E")
 	if err != nil {
 		panic(err)
@@ -44,7 +41,7 @@ func main() {
 		switch update.Message.Text {
 		case "/start":
 			msg := tgbotapi.NewMessage(update.Message.Chat.ID, "Bot doesn't done yet. Please, be patient!")
-			msg.ReplyMarkup = markup
+			msg.ReplyMarkup = keyboard
 			bot.Send(msg)
 		case "/weather":
 			msg := tgbotapi.NewMessage(update.Message.Chat.ID, "Weather in your city: \n" + city + ": " + temper + "°C")
