@@ -33,17 +33,17 @@ func main() {
 	}
 	keyboard := tgbotapi.InlineKeyboardMarkup{}
 	var row []tgbotapi.InlineKeyboardButton
-	btn := tgbotapi.NewInlineKeyboardButtonData("Показать погоду", "/weather")
+	btn := tgbotapi.NewInlineKeyboardButtonData("Показать погоду", "weather")
 	row = append(row, btn)
 	keyboard.InlineKeyboard = append(keyboard.InlineKeyboard, row)
 	u := tgbotapi.NewUpdate(0)
 	u.Timeout = 60
 
-	updates, err := bot.GetUpdatesChan(u)
+	updates := bot.ListenForWebhook("/" + bot.Token)
 	for update := range updates {
 		if update.CallbackQuery != nil {
 			callback := update.CallbackQuery.Data
-			if callback == "/weather" {
+			if callback == "weather" {
 				temper := getWeatherData(55.011897, 36.462555)
 				msg := tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "Weather in your city: \nMaloyaroslavets"+": "+temper+"°C")
 				bot.Send(msg)
@@ -56,7 +56,7 @@ func main() {
 				bot.Send(msg)
 			case "/weather":
 				temper := getWeatherData(55.011897, 36.462555)
-				msg := tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "Weather in your city: \nMaloyaroslavets"+": "+temper+"°C")
+				msg := tgbotapi.NewMessage(update.Message.Chat.ID, "Weather in your city: \nMaloyaroslavets"+": "+temper+"°C")
 				bot.Send(msg)
 			default:
 				msg := tgbotapi.NewMessage(update.Message.Chat.ID, "I don't understand you")
