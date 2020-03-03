@@ -38,14 +38,25 @@ func main() {
 	updates, err := bot.GetUpdatesChan(u)
 
 	for update := range updates {
-		switch update.Message.Text {
-		case "/start":
-			msg := tgbotapi.NewMessage(update.Message.Chat.ID, "Bot doesn't done yet. Please, be patient!")
-			msg.ReplyMarkup = keyboard
-			bot.Send(msg)
-		case "/weather":
-			msg := tgbotapi.NewMessage(update.Message.Chat.ID, "Weather in your city: \n" + city + ": " + temper + "°C")
-			bot.Send(msg)
+		if update.CallbackQuery != nil {
+			callback := update.CallbackQuery.Data
+			if callback == "/weather" {
+				msg := tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "Weather in your city: \n" + city + ": " + temper + "°C")
+				bot.Send(msg)
+			}
+		} else {
+			switch update.Message.Text {
+			case "/start":
+				msg := tgbotapi.NewMessage(update.Message.Chat.ID, "Bot doesn't done yet. Please, be patient!")
+				msg.ReplyMarkup = keyboard
+				bot.Send(msg)
+			case "/weather":
+				msg := tgbotapi.NewMessage(update.Message.Chat.ID, "Weather in your city: \n"+city+": "+temper+"°C")
+				bot.Send(msg)
+			default:
+				msg := tgbotapi.NewMessage(update.Message.Chat.ID, "I don't understand you")
+				bot.Send(msg)
+			}
 		}
 
 	}
