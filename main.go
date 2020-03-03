@@ -6,42 +6,46 @@ import (
 	"os"
 	"strconv"
 )
+
 func MainHandler(resp http.ResponseWriter, _ *http.Request) {
 	resp.Write([]byte("Hi there! I'm DndSpellsBot!"))
 }
-
-func main() {
-	http.HandleFunc("/", MainHandler)
-	go http.ListenAndServe(":"+os.Getenv("PORT"), nil)
-
-	data := GetWeather("https://api.weather.yandex.ru/v1/forecast?lat=55.011897&lon=36.462555&extra=true", "6a653901-d939-47c7-8868-db449fd6a7df")
+func getWeatherData(lat float64, lon float64) string {
+	latStr := strconv.FormatFloat(lat, 'f', 2, 64)
+	lonStr := strconv.FormatFloat(lon, 'f', 2, 64)
+	data := GetWeather("https://api.weather.yandex.ru/v1/forecast?", latStr, lonStr, "6a653901-d939-47c7-8868-db449fd6a7df")
 	var temper string
-	city := "Maloyaroslavets"
-	if  data.Fact.Temp > 0 {
+	if data.Fact.Temp > 0 {
 		temper = "+" + strconv.Itoa(int(data.Fact.Temp))
 	} else {
 		temper = strconv.Itoa(int(data.Fact.Temp))
 	}
+	return temper
+}
+func main() {
+	http.HandleFunc("/", MainHandler)
+	go http.ListenAndServe(":"+os.Getenv("PORT"), nil)
+	//go getWeatherData()
 
-	keyboard := tgbotapi.InlineKeyboardMarkup{}
-		var row []tgbotapi.InlineKeyboardButton
-		btn := tgbotapi.NewInlineKeyboardButtonData("Показать погоду", "/weather")
-		row = append(row, btn)
-		keyboard.InlineKeyboard = append(keyboard.InlineKeyboard, row)
 	bot, err := tgbotapi.NewBotAPI("931561769:AAEFSazicKW9Axrr_lYakkTv5S2WSFTUu6E")
 	if err != nil {
 		panic(err)
 	}
+	keyboard := tgbotapi.InlineKeyboardMarkup{}
+	var row []tgbotapi.InlineKeyboardButton
+	btn := tgbotapi.NewInlineKeyboardButtonData("Показать погоду", "/weather")
+	row = append(row, btn)
+	keyboard.InlineKeyboard = append(keyboard.InlineKeyboard, row)
 	u := tgbotapi.NewUpdate(0)
 	u.Timeout = 60
 
 	updates, err := bot.GetUpdatesChan(u)
-
 	for update := range updates {
 		if update.CallbackQuery != nil {
 			callback := update.CallbackQuery.Data
 			if callback == "/weather" {
-				msg := tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "Weather in your city: \n" + city + ": " + temper + "°C")
+				temper := getWeatherData(55.011897, 36.462555)
+				msg := tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "Weather in your city: \nMaloyaroslavets"+": "+temper+"°C")
 				bot.Send(msg)
 			}
 		} else {
@@ -51,7 +55,8 @@ func main() {
 				msg.ReplyMarkup = keyboard
 				bot.Send(msg)
 			case "/weather":
-				msg := tgbotapi.NewMessage(update.Message.Chat.ID, "Weather in your city: \n"+city+": "+temper+"°C")
+				temper := getWeatherData(55.011897, 36.462555)
+				msg := tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "Weather in your city: \nMaloyaroslavets"+": "+temper+"°C")
 				bot.Send(msg)
 			default:
 				msg := tgbotapi.NewMessage(update.Message.Chat.ID, "I don't understand you")

@@ -6,10 +6,9 @@ import (
 	"net/http"
 )
 
+func GetWeather(url string, lat string, lon string, key string) Weather {
 
-func GetWeather(url string, key string) Weather {
-
-	req, err := http.NewRequest("GET", url, nil)
+	req, err := http.NewRequest("GET", url+"lat="+lat+"&"+"lon="+lon+"&extra=true", nil)
 	if err != nil {
 		log.Fatal(err)
 	}
