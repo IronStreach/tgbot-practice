@@ -32,51 +32,47 @@ func main() {
 	u := tgbotapi.NewUpdate(0)
 	u.Timeout = 60
 
-	updates := bot.ListenForWebhook("/" + bot.Token)
+	//updates := bot.Li("/" + bot.Token)
+	updates, _ := bot.GetUpdatesChan(u)
 	for update := range updates {
 		if update.CallbackQuery != nil {
 			callback := update.CallbackQuery.Data
 			if callback == "weather" {
-				msg := tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "Выберите город")
-				bot.Send(msg)
 				citiesKeyboard := tgbotapi.InlineKeyboardMarkup{}
-				var row []tgbotapi.InlineKeyboardButton
+				var rowCity []tgbotapi.InlineKeyboardButton
 				for i := 0; i < len(names); i++ {
-					btn := tgbotapi.NewInlineKeyboardButtonData(names[i], names[i])
-					row = append(row, btn)
+					btnCity := tgbotapi.NewInlineKeyboardButtonData(names[i], names[i])
+					rowCity = append(rowCity, btnCity)
 				}
-				citiesKeyboard.InlineKeyboard = append(keyboard.InlineKeyboard, row)
-				updates := bot.ListenForWebhook("/" + bot.Token)
-				for update := range updates {
-					if update.CallbackQuery != nil {
-						callback := update.CallbackQuery.Data
-						if callback == "Малоярославец" {
-							temper, _ := GetWeather(cities[0].lat, cities[0].lon)
-							msg := tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "Weather in your city: \nMaloyaroslavets"+": "+temper+"°C")
-							bot.Send(msg)
-						}
-						}
-					}
-				//temper, _ := GetWeather(55.011897, 36.462555)
-				//msg := tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "Weather in your city: \nMaloyaroslavets"+": "+temper+"°C")
-				//bot.Send(msg)
+				citiesKeyboard.InlineKeyboard = append(citiesKeyboard.InlineKeyboard, rowCity)
+				msg := tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "Выберите город")
+				msg.ReplyMarkup = citiesKeyboard
+				bot.Send(msg)
+
+				//updates := bot.ListenForWebhook("/" + bot.Token)
+			}
+
+			if callback == "Малоярославец" {
+				temper, _ := GetWeather(cities[0].lat, cities[0].lon)
+				msg := tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "Weather in your city: \nMaloyaroslavets"+": "+temper+"°C")
+				bot.Send(msg)
 			}
 		} else {
-			switch update.Message.Text {
-			case "/start":
-				msg := tgbotapi.NewMessage(update.Message.Chat.ID, "Bot doesn't done yet. Please, be patient!")
-				msg.ReplyMarkup = keyboard
-				bot.Send(msg)
-			case "/weather":
-				temper, _ := GetWeather(55.011897, 36.462555)
-				msg := tgbotapi.NewMessage(update.Message.Chat.ID, "Weather in your city: \nMaloyaroslavets"+": "+temper+"°C")
-				bot.Send(msg)
-			default:
-				msg := tgbotapi.NewMessage(update.Message.Chat.ID, "I don't understand you")
-				bot.Send(msg)
+				switch update.Message.Text {
+				case "/start":
+					msg := tgbotapi.NewMessage(update.Message.Chat.ID, "Bot doesn't done yet. Please, be patient!")
+					msg.ReplyMarkup = keyboard
+					bot.Send(msg)
+				case "/weather":
+					temper, _ := GetWeather(55.011897, 36.462555)
+					msg := tgbotapi.NewMessage(update.Message.Chat.ID, "Weather in your city: \nMaloyaroslavets"+": "+temper+"°C")
+					bot.Send(msg)
+				default:
+					msg := tgbotapi.NewMessage(update.Message.Chat.ID, "I don't understand you")
+					bot.Send(msg)
+				}
 			}
-		}
 
+		}
 	}
 
-}
