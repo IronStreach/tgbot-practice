@@ -34,8 +34,9 @@ func main() {
 	for update := range updates {
 		if update.CallbackQuery != nil {
 			callback := update.CallbackQuery.Data
-			if callback == "weather" {
+			switch callback {
 
+			case "weather":
 				citiesKeyboard := tgbotapi.InlineKeyboardMarkup{}
 				var rowCity []tgbotapi.InlineKeyboardButton
 				for i := 0; i < len(names); i++ {
@@ -47,7 +48,7 @@ func main() {
 				msg.ReplyMarkup = citiesKeyboard
 				bot.Send(msg)
 
-				if update.CallbackQuery != nil {
+			default:
 					var temperature string
 					for _, names := range cities {
 						if names.city_name == callback {
@@ -56,13 +57,13 @@ func main() {
 							continue
 						}
 					}
-					msg = tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "Weather in your city: \n"+callback+": "+temperature+"°C")
+					msg := tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "Погода в вашем городе: \n"+callback+": "+temperature+"°C")
 					bot.Send(msg)
 				}
 			} else {
 				switch update.Message.Text {
 				case "/start":
-					msg := tgbotapi.NewMessage(update.Message.Chat.ID, "Bot doesn't done yet. Please, be patient!")
+					msg := tgbotapi.NewMessage(update.Message.Chat.ID, "")
 					msg.ReplyMarkup = keyboard
 					bot.Send(msg)
 				case "/weather":
@@ -77,5 +78,3 @@ func main() {
 
 		}
 	}
-
-}
