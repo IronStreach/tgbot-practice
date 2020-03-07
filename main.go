@@ -47,6 +47,7 @@ func main() {
 				msg.ReplyMarkup = citiesKeyboard
 				bot.Send(msg)
 
+			if update.CallbackQuery != nil {
 				var temperature string
 				for _, names := range cities {
 					if  names.city_name == callback {
