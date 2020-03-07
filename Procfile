@@ -1,1 +1,1 @@
-worker: go build tgbot-practice
+worker: tgbot-practice
