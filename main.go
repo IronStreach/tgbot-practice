@@ -47,19 +47,19 @@ func main() {
 				msg.ReplyMarkup = citiesKeyboard
 				bot.Send(msg)
 
-			if update.CallbackQuery != nil {
-				var temperature string
-				for _, names := range cities {
-					if  names.city_name == callback {
-						temperature = GetTemperature(names.lat, names.lon)
-					} else {
-						continue
+				if update.CallbackQuery != nil {
+					var temperature string
+					for _, names := range cities {
+						if names.city_name == callback {
+							temperature = GetTemperature(names.lat, names.lon)
+						} else {
+							continue
+						}
 					}
+					msg = tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "Weather in your city: \n"+callback+": "+temperature+"°C")
+					bot.Send(msg)
 				}
-				msg = tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "Weather in your city: \n"+ callback + ": "+temperature+"°C")
-				bot.Send(msg)
-			}
-		} else {
+			} else {
 				switch update.Message.Text {
 				case "/start":
 					msg := tgbotapi.NewMessage(update.Message.Chat.ID, "Bot doesn't done yet. Please, be patient!")
@@ -78,3 +78,4 @@ func main() {
 		}
 	}
 
+}
