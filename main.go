@@ -30,7 +30,7 @@ func main() {
 	u.Timeout = 60
 	names := GetCitiesName()
 	//updates := bot.Li("/" + bot.Token)
-	updates, _ := bot.GetUpdatesChan(u)
+	updates := bot.ListenForWebhook("/" + bot.Token)
 	for update := range updates {
 		if update.CallbackQuery != nil {
 			callback := update.CallbackQuery.Data
