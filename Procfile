@@ -1,2 +1,1 @@
-web: weather-bot-web
-worker: weather-bot-worker
+worker: go build tgbot-practice
