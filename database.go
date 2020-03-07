@@ -14,7 +14,7 @@ type City struct {
 }
 
 func GetCityName() []City {
-	connStr := "user=postgres password=timofey dbname=postgres sslmode=disable"
+	connStr := "postgres://umqpaljvbdoskz:0b12c7a86db9cbee81034340adae2e6a2643a8506c2a61e39f15abb35d488fe1@ec2-54-217-204-34.eu-west-1.compute.amazonaws.com:5432/dejmrl4g0h1816"
 	db, err := sql.Open("postgres", connStr)
 	if err != nil {
 		panic(err)

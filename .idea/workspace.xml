@@ -2,8 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="636ff192-61c4-4a45-994f-ca4701305ee2" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/database.go" beforeDir="false" afterPath="$PROJECT_DIR$/database.go" afterDir="false" />
     </list>
@@ -211,6 +209,10 @@
     </state>
     <state width="1398" height="284" key="GridCell.Tab.1.right/0.0.1440.900@0.0.1440.900" timestamp="1583240212067" />
     <state width="1398" height="284" key="GridCell.Tab.1.right/0.23.1440.822@0.23.1440.822" timestamp="1583350867073" />
+    <state x="589" y="191" key="com.intellij.database.view.ui.DbObjectDialog" timestamp="1583604594902">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state x="589" y="191" key="com.intellij.database.view.ui.DbObjectDialog/0.0.1440.900@0.0.1440.900" timestamp="1583604594902" />
     <state x="385" y="196" width="670" height="676" key="search.everywhere.popup" timestamp="1583256290886">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
