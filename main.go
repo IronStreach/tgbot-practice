@@ -32,9 +32,6 @@ func main() {
 	//updates := bot.Li("/" + bot.Token)
 	updates := bot.ListenForWebhook("/" + bot.Token)
 	for update := range updates {
-		msg := tgbotapi.NewMessage(update.Message.Chat.ID, "Выберите город")
-		msg.ReplyMarkup = keyboard
-		bot.Send(msg)
 		if update.CallbackQuery != nil {
 			callback := update.CallbackQuery.Data
 			switch callback {
