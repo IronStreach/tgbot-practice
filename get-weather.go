@@ -31,3 +31,15 @@ func GetWeather( lat float64, lon float64) (string, Weather) {
 
 	return temper, resultInt
 }
+
+func GetTemperature(lat, lon float64) string {
+	var weather Weather
+	_, weather = GetWeather(lat, lon)
+	var temperature string
+	if weather.Fact.Temp > 0 {
+		temperature = "+" + strconv.Itoa(int(weather.Fact.Temp))
+	} else {
+		temperature = strconv.Itoa(int(weather.Fact.Temp))
+	}
+	return temperature
+}

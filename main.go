@@ -11,13 +11,10 @@ func MainHandler(resp http.ResponseWriter, _ *http.Request) {
 }
 
 func main() {
-	var cities = GetCityName()
-	var names = make([]string, len(cities))
-	for i := 0; i < len(cities); i++ {
-		names[i] = cities[i].city_name
-	}
 	http.HandleFunc("/", MainHandler)
 	go http.ListenAndServe(":"+os.Getenv("PORT"), nil)
+
+	cities := GetCities()
 
 	bot, err := tgbotapi.NewBotAPI("931561769:AAEFSazicKW9Axrr_lYakkTv5S2WSFTUu6E")
 	if err != nil {
@@ -31,13 +28,14 @@ func main() {
 
 	u := tgbotapi.NewUpdate(0)
 	u.Timeout = 60
-
+	names := GetCitiesName()
 	//updates := bot.Li("/" + bot.Token)
 	updates, _ := bot.GetUpdatesChan(u)
 	for update := range updates {
 		if update.CallbackQuery != nil {
 			callback := update.CallbackQuery.Data
 			if callback == "weather" {
+
 				citiesKeyboard := tgbotapi.InlineKeyboardMarkup{}
 				var rowCity []tgbotapi.InlineKeyboardButton
 				for i := 0; i < len(names); i++ {
@@ -49,12 +47,15 @@ func main() {
 				msg.ReplyMarkup = citiesKeyboard
 				bot.Send(msg)
 
-				//updates := bot.ListenForWebhook("/" + bot.Token)
-			}
-
-			if callback == "Малоярославец" {
-				temper, _ := GetWeather(cities[0].lat, cities[0].lon)
-				msg := tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "Weather in your city: \nMaloyaroslavets"+": "+temper+"°C")
+				var temperature string
+				for _, names := range cities {
+					if  names.city_name == callback {
+						temperature = GetTemperature(names.lat, names.lon)
+					} else {
+						continue
+					}
+				}
+				msg = tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "Weather in your city: \n"+ callback + ": "+temperature+"°C")
 				bot.Send(msg)
 			}
 		} else {
