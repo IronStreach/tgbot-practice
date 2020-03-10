@@ -7,7 +7,7 @@ import (
 )
 
 func MainHandler(resp http.ResponseWriter, _ *http.Request) {
-	resp.Write([]byte("Hi there! I'm DndSpellsBot!"))
+	resp.Write([]byte("Hi there!"))
 }
 
 func main() {
